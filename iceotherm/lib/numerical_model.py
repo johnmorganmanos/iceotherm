@@ -284,6 +284,10 @@ class ice_temperature():
             T_new = self.A*self.T - self.B*self.T + self.dt*self.Sdot
             # Reset anything above the pressure melting point
             T_new[T_new>self.pmp] = self.pmp[T_new>self.pmp]
+            
+            #check if we introduced NaN values
+            if not np.all(np.isnfinite(T_new)):
+                raise ValueError("Infinite or NAN introduced to temperature profile, check the size of time and spatial steps.")
             # Update the iteration counter
             steady_iter += 1
         self.T = T_new.copy()
